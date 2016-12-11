@@ -86,30 +86,6 @@ RUN ./autogen.sh \
     && make install
 # =================================
 
-
-
-# Build OpenCV 3.x
-# =================================
-#RUN apt-get update -qq && apt-get install -y --force-yes libopencv-dev
-RUN pip3 install --no-cache-dir --upgrade numpy
-WORKDIR /usr/local/src
-RUN mkdir -p opencv/release
-WORKDIR /usr/local/src/opencv/release
-RUN cmake -D CMAKE_BUILD_TYPE=RELEASE \
-          -D CMAKE_INSTALL_PREFIX=/usr/local \
-          -D WITH_TBB=ON \
-          -D BUILD_PYTHON_SUPPORT=ON \
-          -D WITH_V4L=ON \
-          -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules \
-          ..
-
-RUN make -j ${NUM_CORES} \
-    && make install \
-    && sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf' \
-    && ldconfig
-# =================================
-
-
 # Build ffmpeg.
 # =================================
 RUN apt-get update -qq && apt-get install -y --force-yes \
@@ -133,6 +109,30 @@ RUN ./configure --extra-libs="-ldl" \
             --enable-nonfree \
     && make -j ${NUM_CORES} \
     && make install
+# =================================
+
+
+
+
+# Build OpenCV 3.x
+# =================================
+#RUN apt-get update -qq && apt-get install -y --force-yes libopencv-dev
+RUN pip3 install --no-cache-dir --upgrade numpy
+WORKDIR /usr/local/src
+RUN mkdir -p opencv/release
+WORKDIR /usr/local/src/opencv/release
+RUN cmake -D CMAKE_BUILD_TYPE=RELEASE \
+          -D CMAKE_INSTALL_PREFIX=/usr/local \
+          -D WITH_TBB=ON \
+          -D BUILD_PYTHON_SUPPORT=ON \
+          -D WITH_V4L=ON \
+          -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules \
+          ..
+
+RUN make -j ${NUM_CORES} \
+    && make install \
+    && sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf' \
+    && ldconfig
 # =================================
 
 
